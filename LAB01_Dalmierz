@@ -1,0 +1,42 @@
+#define echoPin 11
+#define trigPin 12
+
+void setup() {
+Serial.begin(9600);
+pinMode(2,OUTPUT);
+pinMode(3,OUTPUT);
+pinMode(4,OUTPUT);
+pinMode(5,OUTPUT);
+pinMode(6,OUTPUT);
+pinMode(7,OUTPUT);
+pinMode(echoPin,INPUT);
+pinMode(trigPin,OUTPUT);
+digitalWrite(2,LOW);
+digitalWrite(3,LOW);
+digitalWrite(4,LOW);
+digitalWrite(5,LOW);
+digitalWrite(6,LOW);
+digitalWrite(7,LOW);  
+}
+
+void loop() {
+long jakDaleko = zmierzOdleglosc();
+Serial.println(jakDaleko);
+delay(200);
+
+}
+
+int zmierzOdleglosc() {
+  long czas, dystans;
+
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  czas = pulseIn(echoPin, HIGH);
+  dystans = czas / 58;
+
+  return dystans;
+}
