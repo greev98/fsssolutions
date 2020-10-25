@@ -1,0 +1,78 @@
+#include <OneWire.h> Biblioteka dla czujnika cyfrowego
+#include <DallasTemperature.h> //biblioteka dla czujnika cyfrowego
+#include <LiquidCrystal.h> //Biblioteka dla wyswietlacza
+#include "DHT.h" //biblioteka dla DHT11
+#define DHT11_PIN 8
+#define LM35 A0
+
+LiquidCrystal lcd(2, 3, 4, 5, 6, 7); //Informacja o podłączeniu nowego wyświetlacza
+DHT dht; //nowy czujnik DHT11
+
+OneWire oneWire(A3); //Podłączenie do A4
+DallasTemperature sensors(&oneWire); //Przekazania informacji do biblioteki
+
+
+void setup() {
+  Serial.begin(9600);
+  
+  lcd.begin(16, 2); //Deklaracja typu
+  lcd.clear();
+  lcd.setCursor(0, 0); //Ustawienie kursora
+  lcd.print("");
+  lcd.setCursor(0,1);
+  lcd.print(""); 
+  dht.setup(DHT11_PIN);
+  pinMode(LM35,INPUT); //ustawienie pinu A5 jako wejscia
+}
+
+void loop()
+{ 
+  int tempDHT = dht.getTemperature();
+  float tempLM = analogRead(LM35);
+  float tempLMc = (tempLM*500)/1024;
+  sensors.requestTemperatures(); //pobranie informacji o temp na czujniku DS18
+  float tempDS18 = sensors.getTempCByIndex(0);
+  
+  
+  if (dht.getStatusString() == "OK") {
+  lcd.setCursor(0, 0); //Ustawienie kursora
+  lcd.print("Temp DHT11     ");
+  lcd.setCursor(0, 1); //Ustawienie kursora w odpowiednim momencie
+  lcd.print(tempDHT); //Wyświetlenie tekstu 
+  lcd.setCursor(2, 1); //Ustawienie kursora w odpowiednim momencie
+  lcd.print("C     "); //Wyświetlenie tekstu 
+
+  Serial.print(tempLMc);
+  Serial.print("\t");
+  Serial.print(tempDHT);
+  Serial.print("\t");
+  Serial.println(tempDS18);
+  }
+  delay(3000);
+  lcd.setCursor(0, 0); //Ustawienie kursora
+  lcd.print("Temp LM35      ");
+  lcd.setCursor(0, 1); //Ustawienie kursora w odpowiednim momencie
+  lcd.print(tempLMc); //Wyświetlenie tekstu 
+  lcd.setCursor(4, 1); //Ustawienie kursora w odpowiednim momencie
+  lcd.print("C       "); //Wyświetlenie tekstu 
+
+  delay(3000);
+
+  lcd.setCursor(0, 0); //Ustawienie kursora
+  lcd.print("Temp DS18 ");
+  lcd.setCursor(0, 1); //Ustawienie kursora w odpowiednim momencie
+  lcd.print(tempDS18); //Wyświetlenie tekstu 
+  lcd.setCursor(4, 1); //Ustawienie kursora w odpowiednim momencie
+  lcd.print("C      "); //Wyświetlenie tekstu 
+
+  delay(3000);
+
+
+ 
+  
+ 
+ 
+  
+
+ 
+}
